@@ -1,15 +1,32 @@
-import { Text, View, StyleSheet, Image } from "react-native";
+import React, { useEffect } from 'react';
+import { View, StyleSheet, Image } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useAuth } from '../contexts/AuthContext';
 
-const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+export default function SplashScreen() {
+  const router = useRouter();
+  const { user, isLoading } = useAuth();
 
-export default function Index() {
-  console.log(EXPO_PUBLIC_BACKEND_URL, "EXPO_PUBLIC_BACKEND_URL");
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isLoading) {
+        if (user) {
+          router.replace('/(tabs)');
+        } else {
+          router.replace('/login');
+        }
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [user, isLoading]);
 
   return (
     <View style={styles.container}>
       <Image
-        source={require("../assets/images/app-image.png")}
-        style={styles.image}
+        source={{ uri: 'https://customer-assets.emergentagent.com/job_ae97bd5a-1a53-48ca-abe8-2de18ed21174/artifacts/xxpnwb07_1639741901981%20%281%29.jpg' }}
+        style={styles.logo}
+        resizeMode="contain"
       />
     </View>
   );
@@ -18,13 +35,12 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0c0c0c",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
+  logo: {
+    width: 200,
+    height: 200,
   },
 });
